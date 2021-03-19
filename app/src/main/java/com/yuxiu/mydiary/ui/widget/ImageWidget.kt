@@ -57,7 +57,6 @@ fun getImage(entity: MyPageImageEntity) {
     GlideImage(
         data = entity.imagePath,
         modifier = Modifier
-
             .offset {
                 IntOffset(
                     entity.offsetXFrame.value.roundToInt(),
@@ -109,11 +108,18 @@ fun getImage(entity: MyPageImageEntity) {
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consumeAllChanges()
-                    if (entity.imageW.value + dragAmount.x / MainActivity.density > 40) {
+                    if(dragAmount.x>0&&entity.imageW.value*MainActivity.density + dragAmount.x  < MainActivity.screenW){
                         entity.imageW.value += dragAmount.x / MainActivity.density
                         entity.offsetX.value += dragAmount.x
                         entity.imageH.value = entity.imageW.value * entity.bl.value
-                        entity.offsetY.value += dragAmount.x * entity.bl.value
+                        entity.offsetY.value = entity.offsetYFrame.value+entity.imageH.value*MainActivity.density
+                    }
+
+                    if (dragAmount.x <0&&entity.imageW.value + dragAmount.x / MainActivity.density > 40) {
+                        entity.imageW.value += dragAmount.x / MainActivity.density
+                        entity.offsetX.value += dragAmount.x
+                        entity.imageH.value = entity.imageW.value * entity.bl.value
+                        entity.offsetY.value = entity.offsetYFrame.value+entity.imageH.value*MainActivity.density
                     }
 
                 }

@@ -141,7 +141,7 @@ public class AlbumHelper {
 
 		String columns[] = new String[] { Media._ID, Media.BUCKET_ID,
 				Media.PICASA_ID, Media.DATA, Media.DISPLAY_NAME, Media.TITLE,
-				Media.SIZE, Media.BUCKET_DISPLAY_NAME,Media.HEIGHT,Media.WIDTH };
+				Media.SIZE, Media.BUCKET_DISPLAY_NAME,Media.HEIGHT,Media.WIDTH,Media.ORIENTATION };
 		Cursor cur = cr.query(Media.EXTERNAL_CONTENT_URI, columns, null, null,
 				Media.DATE_TAKEN+ " DESC");
 		if (cur.moveToFirst()) {
@@ -156,6 +156,8 @@ public class AlbumHelper {
 					.getColumnIndexOrThrow(Media.BUCKET_DISPLAY_NAME);
 			int bucketIdIndex = cur.getColumnIndexOrThrow(Media.BUCKET_ID);
 			int picasaIdIndex = cur.getColumnIndexOrThrow(Media.PICASA_ID);
+			int orientationIndex = cur.getColumnIndexOrThrow(Media.ORIENTATION);
+
 			int totalNum = cur.getCount();
 
 			do {
@@ -169,11 +171,12 @@ public class AlbumHelper {
 				String bucketName = cur.getString(bucketDisplayNameIndex);
 				String bucketId = cur.getString(bucketIdIndex);
 				String picasaId = cur.getString(picasaIdIndex);
+				int orientation=cur.getInt(orientationIndex);
 
 				Log.i(TAG, _id + ", bucketId: " + bucketId + ", picasaId: "
 						+ picasaId + " name:" + name + " path:" + path
 						+ " title: " + title + " size: " + size + " bucket: "
-						+ bucketName + "---");
+						+ bucketName + "---"+orientation);
 
 				ImageBucket bucket = bucketList.get(bucketId);
 				if (bucket == null) {
@@ -187,8 +190,13 @@ public class AlbumHelper {
 				imageItem.imageId = _id;
 				imageItem.imagePath = path;
 				imageItem.size=size;
-				imageItem.width=width;
-				imageItem.height=height;
+				if(orientation==90||orientation==270) {
+					imageItem.width = height;
+					imageItem.height = width;
+				}else{
+					imageItem.width = width;
+					imageItem.height = height;
+				}
 				imageItem.thumbnailPath = thumbnailList.get(_id);
 				bucket.imageList.add(imageItem);
 				allImageList.add(imageItem);

@@ -1,6 +1,8 @@
 package com.yuxiu.mydiary.ui.widget
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,11 +15,13 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.BitmapCompat
 import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.data.Mydata
 import com.yuxiu.mydiary.java.util.ToastUtil
@@ -26,6 +30,8 @@ import com.yuxiu.mydiary.java.util.image.ImageBucket
 import com.yuxiu.mydiary.java.util.image.ImageItem
 import com.yuxiu.mydiary.ui.Navigation
 import dev.chrisbanes.accompanist.glide.GlideImage
+import kotlinx.coroutines.launch
+import java.io.File
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -48,36 +54,12 @@ fun selectPhoto(context: Context) {
 
 @Composable
 fun itemView(imageItem: ImageItem) {
-
     GlideImage(modifier = Modifier
         .size(50.dp)
         .clickable {
             var entity = MyPageImageEntity()
-            entity.imagePath = imageItem.imagePath
-            Log.e("image",imageItem.size)
-            if(imageItem.height>imageItem.width){
-                if(imageItem.height>MainActivity.screenH){
-                    var height:Float=(MainActivity.screenH).toFloat()
-                    var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
-                    var width:Float=imageItem.height.toFloat()/bl
-                    entity.bl= mutableStateOf(bl)
-                    entity.imageH= mutableStateOf(height/MainActivity.density)
-                    entity.imageW= mutableStateOf(width/MainActivity.density)
-                    entity.offsetX=mutableStateOf(width)
-                    entity.offsetY= mutableStateOf(height)
-                }else{
-                    var height:Float=imageItem.height.toFloat()
-                    var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
-                    var width:Float=imageItem.height.toFloat()/bl
-                    entity.bl= mutableStateOf(bl)
-                    entity.imageH= mutableStateOf(height/MainActivity.density)
-                    entity.imageW= mutableStateOf(width/MainActivity.density)
-                    entity.offsetX=mutableStateOf(width)
-                    entity.offsetY= mutableStateOf(height)
-                }
-            }else{
-                if(imageItem.width>MainActivity.screenW){
-
+                entity.imagePath=imageItem.imagePath
+            if(imageItem.height>MainActivity.screenH&&imageItem.width>MainActivity.screenW){
                     var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
                     var width:Float=(MainActivity.screenW).toFloat()
                     var height:Float=width*bl
@@ -86,16 +68,34 @@ fun itemView(imageItem: ImageItem) {
                     entity.imageW= mutableStateOf(width/MainActivity.density)
                     entity.offsetX=mutableStateOf(width)
                     entity.offsetY= mutableStateOf(height)
-                }else{
-                    var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
-                    var width:Float=(imageItem.width).toFloat()
-                    var height:Float=width*bl
-                    entity.bl= mutableStateOf(bl)
-                    entity.imageH= mutableStateOf(height/MainActivity.density)
-                    entity.imageW= mutableStateOf(width/MainActivity.density)
-                    entity.offsetX=mutableStateOf(width)
-                    entity.offsetY= mutableStateOf(height)
-                }
+
+            }else if(imageItem.height>MainActivity.screenH){
+                var height:Float=(MainActivity.screenH).toFloat()
+                var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
+                var width:Float=height.toFloat()/bl
+                entity.bl= mutableStateOf(bl)
+                entity.imageH= mutableStateOf(height/MainActivity.density)
+                entity.imageW= mutableStateOf(width/MainActivity.density)
+                entity.offsetX=mutableStateOf(width)
+                entity.offsetY= mutableStateOf(height)
+            }else if(imageItem.width>MainActivity.screenW){
+                var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
+                var width:Float=(MainActivity.screenW).toFloat()
+                var height:Float=width*bl
+                entity.bl= mutableStateOf(bl)
+                entity.imageH= mutableStateOf(height/MainActivity.density)
+                entity.imageW= mutableStateOf(width/MainActivity.density)
+                entity.offsetX=mutableStateOf(width)
+                entity.offsetY= mutableStateOf(height)
+            }else{
+                var height:Float=imageItem.height.toFloat()
+                var bl:Float=(imageItem.height.toFloat()/imageItem.width.toFloat())
+                var width:Float=imageItem.width.toFloat()
+                entity.bl= mutableStateOf(bl)
+                entity.imageH= mutableStateOf(height/MainActivity.density)
+                entity.imageW= mutableStateOf(width/MainActivity.density)
+                entity.offsetX=mutableStateOf(width)
+                entity.offsetY= mutableStateOf(height)
             }
             Mydata.myPageImageData.add(entity)
 

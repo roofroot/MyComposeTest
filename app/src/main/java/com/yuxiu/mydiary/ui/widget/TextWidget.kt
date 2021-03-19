@@ -94,10 +94,13 @@ fun getText(entity: MyPageTextEntity) {
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consumeAllChanges()
-                    if (entity.offsetX.value+dragAmount.x-entity.offsetXFrame.value> 40) {
+                    if (entity.offsetX.value+dragAmount.x-entity.offsetXFrame.value> 40
+                        &&entity.offsetX.value+dragAmount.x-entity.offsetXFrame.value< MainActivity.screenW
+                    ) {
                         entity.offsetX.value += dragAmount.x
                     }
-                    if(entity.offsetY.value+dragAmount.y-entity.offsetYFrame.value>20){
+                    if(entity.offsetY.value+dragAmount.y-entity.offsetYFrame.value>20
+                        &&entity.offsetY.value+dragAmount.y-entity.offsetYFrame.value<MainActivity.screenH){
                         entity.offsetY.value+=dragAmount.y
                     }
                 }
