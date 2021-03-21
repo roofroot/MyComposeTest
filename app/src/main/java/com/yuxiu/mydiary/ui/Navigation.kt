@@ -1,46 +1,65 @@
 package com.yuxiu.mydiary.ui
 
-import android.opengl.Visibility
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
-import androidx.compose.runtime.mutableStateOf
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.yuxiu.mydiary.ui.widget.navigation
 
-
-class NaviData(){
-    private val misv=MutableLiveData(false);
-    val isv: LiveData<Boolean> = misv
-    fun onStateChange(visibility:Boolean){
-        misv.value=visibility;
-    }
+enum class PageName{
+    EDITPAGE,SHOWPAGE
 }
-class Navigation: ViewModel() {
-    companion object{
+
+class NaviData() {
+    val isv = MutableLiveData(false);
+    fun onStateChange(visibility: Boolean) {
+        isv.value = visibility;
+    }
+
+}
+
+class Navigation  {
+    companion object {
         val MYPAGE = "mypage"
         val SELECTPHOTOLIST = "selectPhotolist"
-        val INPUTTEXTPAGE="inputtextpage"
+        val INPUTTEXTPAGE = "inputtextpage"
+        val MYPAGESTATE="mypagestate"
     }
 
-     val map:HashMap<String,NaviData> = HashMap();
+    val currentPage = MutableLiveData<PageName>()
+    val map: HashMap<String, NaviData> = HashMap();
+
     init {
-        var navi=NaviData();
-        navi.onStateChange(true);
-        map.put(MYPAGE,navi)
+        var navi = NaviData();
+        map.put(MYPAGE, navi)
+        navi = NaviData()
+        map.put(SELECTPHOTOLIST, navi)
+        navi = NaviData()
+        map.put(INPUTTEXTPAGE, navi)
         navi= NaviData()
-        map.put(SELECTPHOTOLIST,navi)
-        navi= NaviData()
-        map.put(INPUTTEXTPAGE,navi)
+        map.put(MYPAGESTATE,navi)
     }
-     fun onStateChange(name:String,visibility:Boolean){
+
+    fun onStateChange(name: String, visibility: Boolean) {
         map.get(name)?.onStateChange(visibility)
     }
-    fun onStateChange(mapdatas:Map<String,Boolean>){
-        for (m in mapdatas){
+    fun refreshState(key:String)
+    {
+        var bool=map.get(key)?.isv?.value;
+        bool?.let {
+            map.get(key)?.isv?.value=!bool
+        }
+    }
+    fun changeCurrentPage(page: PageName){
+        currentPage.value=page;
+    }
+    fun onStateChange(mapdatas: Map<String, Boolean>) {
+        for (m in mapdatas) {
             map.get(m.key)?.onStateChange(m.value)
         }
-
     }
 
 }

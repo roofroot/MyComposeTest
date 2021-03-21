@@ -13,11 +13,13 @@ buildscript {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "io.realm:realm-gradle-plugin:6.1.0"
     }
 }
 
@@ -31,6 +33,7 @@ subprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        mavenCentral()
     }
 
     apply plugin: 'com.diffplug.spotless'

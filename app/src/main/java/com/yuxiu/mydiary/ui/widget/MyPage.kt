@@ -9,31 +9,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 
-public data class MyPageEntity(
-    var texts:ArrayList<MyPageTextEntity> = arrayListOf(),
-    var images: ArrayList<MyPageImageEntity> = ArrayList()
-)
-public data class MyPageImageEntity(
-       var offsetXFrame: MutableState<Float> = mutableStateOf(0f),
-        var offsetYFrame: MutableState<Float> = mutableStateOf(0f),
-        var offsetX: MutableState<Float> = mutableStateOf(120f),
-        var offsetY: MutableState<Float> = mutableStateOf(90f),
-        var imageW: MutableState<Float> = mutableStateOf(40f) ,
-        var imageH: MutableState<Float> = mutableStateOf(30f),
-        var imagePath:String ="",
-        var bl: MutableState<Float> = mutableStateOf(1f),
-    )
-public data class MyPageTextEntity(
-    var offsetXFrame: MutableState<Float> = mutableStateOf(0f),
-    var offsetYFrame: MutableState<Float> = mutableStateOf(0f),
-    var offsetX: MutableState<Float> = mutableStateOf(80f),
-    var offsetY: MutableState<Float> = mutableStateOf(25f),
+data class MyPageEntity(
+    var elements:ArrayList<EditPageElement> = arrayListOf())
+open class EditPageElement(  var offsetXFrame: MutableState<Float> = mutableStateOf(0f),
+                             var offsetYFrame: MutableState<Float> = mutableStateOf(0f),
+                             var offsetX: MutableState<Float> = mutableStateOf(120f),
+                             var offsetY: MutableState<Float> = mutableStateOf(90f),
+                             var index:Int=-1
+                             )
+
+data class MyPageImageEntity(  var imageW: MutableState<Float> = mutableStateOf(40f) ,
+                                var imageH: MutableState<Float> = mutableStateOf(30f),
+                                var imagePath:String ="",
+                                var imageMaxW:Float=0f,
+                                var bl: Float = 1f,):EditPageElement()
+
+ data class MyPageTextEntity(
     var textContent:String="",
     var textColor:Color= Color.Black,
     var bgColor:Color=Color.Transparent
-)
+):EditPageElement()
 @Composable
-fun MyPage(images: ArrayList<MyPageImageEntity?>,texts: ArrayList<MyPageTextEntity?>): Unit {
+fun MyPage(elements: ArrayList<EditPageElement?>): Unit {
 
     Box(
         modifier = Modifier
@@ -41,14 +38,14 @@ fun MyPage(images: ArrayList<MyPageImageEntity?>,texts: ArrayList<MyPageTextEnti
             .background(Color.Gray)
 
     ) {
-        for (image in images ){
-            image?.let {
-                getImage(image)
-            }
-        }
-        for (text in texts ){
-            text?.let {
-                getText(text)
+        for (element in elements ){
+            element?.let {
+                if(element is MyPageImageEntity) {
+                    getImage(element)
+                }
+                if(element is MyPageTextEntity){
+                    getText(element)
+                }
             }
         }
     }

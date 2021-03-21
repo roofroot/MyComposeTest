@@ -63,8 +63,8 @@ fun getText(entity: MyPageTextEntity) {
             }
             .border(1.dp, Color.Black)
             .background(entity.bgColor)
-            .width(Dp((entity.offsetX.value-entity.offsetXFrame.value)/3))
-            .height(Dp((entity.offsetY.value-entity.offsetYFrame.value)/3))
+            .width(Dp((entity.offsetX.value - entity.offsetXFrame.value) / MainActivity.density))
+            .height(Dp((entity.offsetY.value - entity.offsetYFrame.value) / MainActivity.density))
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consumeAllChanges()
@@ -81,44 +81,6 @@ fun getText(entity: MyPageTextEntity) {
             },
 
     )
-    Canvas(
-        Modifier
-            .offset {
-                IntOffset(
-                    entity.offsetX.value.roundToInt(),
-                    entity.offsetY.value.roundToInt()
-                )
-            }
-            .background(Color.Blue)
-            .size(Dp(50f))
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consumeAllChanges()
-                    if (entity.offsetX.value+dragAmount.x-entity.offsetXFrame.value> 40
-                        &&entity.offsetX.value+dragAmount.x-entity.offsetXFrame.value< MainActivity.screenW
-                    ) {
-                        entity.offsetX.value += dragAmount.x
-                    }
-                    if(entity.offsetY.value+dragAmount.y-entity.offsetYFrame.value>20
-                        &&entity.offsetY.value+dragAmount.y-entity.offsetYFrame.value<MainActivity.screenH){
-                        entity.offsetY.value+=dragAmount.y
-                    }
-                }
-            }
-    )
-    {
-
-        drawIntoCanvas { canvas ->
-            val paint = Paint()
-            paint.color = Color.Black
-            paint.strokeWidth = 3f
-            paint.style = PaintingStyle.Stroke
-            var rect = Rect(
-                left, top, right, bottom
-            )
-            canvas.drawRect(rect, paint)
-//                canvas.drawCircle(Offset(50f,50f),50f,paint)
-        }
-    }
+   ActionWeight(entity = entity)
 
 }

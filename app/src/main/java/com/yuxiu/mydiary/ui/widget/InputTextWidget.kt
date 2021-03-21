@@ -4,14 +4,11 @@ import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,18 +19,13 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.R
-import com.yuxiu.mydiary.data.Mydata
+import com.yuxiu.mydiary.data.editPageData
 import com.yuxiu.mydiary.ui.Navigation
-import java.lang.reflect.Array
-import kotlin.math.roundToInt
 
 data class InputColorEntity(var color: Color = Color.Black, var name: String = "")
 
@@ -48,9 +40,11 @@ fun inputTextPage() {
 
     var myPageTextEntity = MyPageTextEntity()
     var content: MutableState<String> = remember { mutableStateOf("") }
-    Column (Modifier.background(Color.White).fillMaxWidth().fillMaxHeight()){
-        Box(modifier = Modifier.fillMaxWidth().background(Color.White)
-            .height(Dp((MainActivity.screenH - 1000) / MainActivity.density)) ){
+        Column (modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize(), Arrangement.Bottom,
+        ){
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()){
 //            Image(
 //                contentDescription = "",
 //                painter = painterResource(id = R.mipmap.transbg),
@@ -59,32 +53,33 @@ fun inputTextPage() {
 //                    .fillMaxHeight()
 //
 //            )
-            TextField(value = content.value,
-                textStyle = TextStyle(color = fgColor.value),
-                onValueChange = { it ->
+                TextField(value = content.value,
+                    textStyle = TextStyle(color = fgColor.value),
+                    onValueChange = { it ->
 
-                    content.value = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight().background(color = bgColor.value))
-        }
+                        content.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .background(color = bgColor.value))
+            }
 
-        var colorList = ArrayList<InputColorEntity>()
-        var inputTextColor = InputColorEntity()
-        inputTextColor.color = Color.White
-        colorList.add(inputTextColor)
-        inputTextColor = InputColorEntity()
-        inputTextColor.color = Color.Green
-        colorList.add(inputTextColor)
-        inputTextColor = InputColorEntity()
-        inputTextColor.color = Color.Blue
-        colorList.add(inputTextColor)
-        inputTextColor = InputColorEntity()
-        inputTextColor.color = Color.Cyan
-        colorList.add(inputTextColor)
-        inputTextColor = InputColorEntity()
-        colorList.add(inputTextColor)
+            var colorList = ArrayList<InputColorEntity>()
+            var inputTextColor = InputColorEntity()
+            inputTextColor.color = Color.White
+            colorList.add(inputTextColor)
+            inputTextColor = InputColorEntity()
+            inputTextColor.color = Color.Green
+            colorList.add(inputTextColor)
+            inputTextColor = InputColorEntity()
+            inputTextColor.color = Color.Blue
+            colorList.add(inputTextColor)
+            inputTextColor = InputColorEntity()
+            inputTextColor.color = Color.Cyan
+            colorList.add(inputTextColor)
+            inputTextColor = InputColorEntity()
+            colorList.add(inputTextColor)
 //        LazyRow(modifier = Modifier.padding(end = 16.dp)) {
 //            items(colorList.size) { index ->
 //                Box(modifier = Modifier
@@ -97,23 +92,27 @@ fun inputTextPage() {
 //                )
 //            }
 //        }
-        PaletteWidget(fgColor,bgColor)
-        Box(modifier = Modifier
-            .height(30.dp)
-            .width(60.dp)
-            .border(1.dp, Color.Gray)
-            .background(Color.White)
-            .clickable {
-                myPageTextEntity.textColor =Color(colorArr[0], colorArr[1], colorArr[2], colorArr[3])
-                myPageTextEntity.bgColor=Color(colorArrBg[0], colorArrBg[1], colorArrBg[2], colorArrBg[3])
-                Mydata.myPageTextData.add(myPageTextEntity)
-                MainActivity.navigation.onStateChange(Navigation.INPUTTEXTPAGE, false)
-                myPageTextEntity.textContent = content.value
-            }) {
-            Text(text = "确定")
+            PaletteWidget(fgColor,bgColor)
+            Box(modifier = Modifier
+                .height(30.dp)
+                .width(60.dp)
+                .border(1.dp, Color.Gray)
+                .background(Color.White)
+                .clickable {
+                    myPageTextEntity.textColor =
+                        Color(colorArr[0], colorArr[1], colorArr[2], colorArr[3])
+                    myPageTextEntity.bgColor =
+                        Color(colorArrBg[0], colorArrBg[1], colorArrBg[2], colorArrBg[3])
+                    myPageTextEntity.index= editPageData.size
+                    editPageData.add(myPageTextEntity)
+                    navigation.onStateChange(Navigation.INPUTTEXTPAGE, false)
+                    myPageTextEntity.textContent = content.value
+                }) {
+                Text(text = "确定")
+            }
+
         }
 
-    }
 
 }
 var colorArr=arrayOf(0, 0, 0, 255)

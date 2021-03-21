@@ -3,6 +3,7 @@ package com.yuxiu.mydiary.ui.widget
 import android.util.Log
 import androidx.annotation.Px
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -23,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.R
 import dev.chrisbanes.accompanist.glide.GlideImage
@@ -30,11 +32,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun getImage(entity: MyPageImageEntity) {
-    val left: Float = 0f;
-    val right: Float = 30f;
-    val top: Float = 0f;
-    val bottom: Float = 30f;
 //    val image = painterResource(R.drawable.placeholder_4_3)
+
     entity.offsetXFrame = remember {
         mutableStateOf(entity.offsetXFrame.value)
     }
@@ -53,7 +52,6 @@ fun getImage(entity: MyPageImageEntity) {
     entity.imageH = remember {
         mutableStateOf(entity.imageH.value)
     }
-
     GlideImage(
         data = entity.imagePath,
         modifier = Modifier
@@ -95,49 +93,7 @@ fun getImage(entity: MyPageImageEntity) {
             false
         }
     )
-    Canvas(
-        Modifier
-            .offset {
-                IntOffset(
-                    entity.offsetX.value.roundToInt(),
-                    entity.offsetY.value.roundToInt()
-                )
-            }
-            .background(Color.Blue)
-            .size(Dp(50f))
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consumeAllChanges()
-                    if(dragAmount.x>0&&entity.imageW.value*MainActivity.density + dragAmount.x  < MainActivity.screenW){
-                        entity.imageW.value += dragAmount.x / MainActivity.density
-                        entity.offsetX.value += dragAmount.x
-                        entity.imageH.value = entity.imageW.value * entity.bl.value
-                        entity.offsetY.value = entity.offsetYFrame.value+entity.imageH.value*MainActivity.density
-                    }
+    ActionWeight(entity = entity)
 
-                    if (dragAmount.x <0&&entity.imageW.value + dragAmount.x / MainActivity.density > 40) {
-                        entity.imageW.value += dragAmount.x / MainActivity.density
-                        entity.offsetX.value += dragAmount.x
-                        entity.imageH.value = entity.imageW.value * entity.bl.value
-                        entity.offsetY.value = entity.offsetYFrame.value+entity.imageH.value*MainActivity.density
-                    }
-
-                }
-            }
-    )
-    {
-
-        drawIntoCanvas { canvas ->
-            val paint = Paint()
-            paint.color = Color.Black
-            paint.strokeWidth = 3f
-            paint.style = PaintingStyle.Stroke
-            var rect = Rect(
-                left, top, right, bottom
-            )
-            canvas.drawRect(rect, paint)
-//                canvas.drawCircle(Offset(50f,50f),50f,paint)
-        }
-    }
 
 }
