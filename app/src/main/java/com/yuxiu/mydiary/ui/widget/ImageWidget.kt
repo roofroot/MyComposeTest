@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -28,11 +29,17 @@ import androidx.compose.ui.unit.dp
 import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.R
 import dev.chrisbanes.accompanist.glide.GlideImage
+import kotlin.math.cos
 import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.tan
 
 @Composable
 fun getImage(entity: MyPageImageEntity) {
 //    val image = painterResource(R.drawable.placeholder_4_3)
+    var stateAction = remember {
+        mutableStateOf(false)
+    }
 
     entity.offsetXFrame = remember {
         mutableStateOf(entity.offsetXFrame.value)
@@ -52,48 +59,71 @@ fun getImage(entity: MyPageImageEntity) {
     entity.imageH = remember {
         mutableStateOf(entity.imageH.value)
     }
-    GlideImage(
-        data = entity.imagePath,
-        modifier = Modifier
+    entity.imageRotate= remember {
+        mutableStateOf(entity.imageRotate.value)
+    }
+    Box(
+        Modifier
+            .wrapContentHeight()
+            .wrapContentHeight()
             .offset {
                 IntOffset(
                     entity.offsetXFrame.value.roundToInt(),
                     entity.offsetYFrame.value.roundToInt()
                 )
             }
-            .width(Dp(entity.imageW.value))
-            .height(Dp(entity.imageH.value))
             .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consumeAllChanges()
+                detectDragGestures({
+                    entity.isRotate.value=false
+                }, {
+                }, {
+                   
+                }, {
+                    change, dragAmount ->
+                        change.consumeAllChanges()
+
 //                        if(0<offsetXFrame.value+dragAmount.x) {
-                    entity.offsetXFrame.value += dragAmount.x
-                    entity.offsetX.value += dragAmount.x
+                        entity.offsetXFrame.value += dragAmount.x
+                        entity.offsetX.value += dragAmount.x
 //                        }
 //                        if(offsetYFrame.value+dragAmount.y>0){
-                    entity.offsetYFrame.value += dragAmount.y
-                    entity.offsetY.value += dragAmount.y
+                        entity.offsetYFrame.value += dragAmount.y
+                        entity.offsetY.value += dragAmount.y
 //                        }
+                })
+
+
+            },){
+        GlideImage(
+            data = entity.imagePath,
+            modifier = Modifier
+
+                .rotate(entity.imageRotate.value)
+                .width(Dp(entity.imageW.value))
+                .height(Dp(entity.imageH.value)
+                )
+            ,
+            contentScale = ContentScale.Fit,
+            contentDescription = "My content description",
+            loading = {
+                Box(Modifier.matchParentSize()) {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
                 }
 
             },
-        contentScale = ContentScale.Fit,
-        contentDescription = "My content description",
-        loading = {
-            Box(Modifier.matchParentSize()) {
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
+            error = {
+
+            }, shouldRefetchOnSizeChange = { _, size ->
+
+//            Log.e("glide", "${size.height},${size.width}")
+                false
             }
+        )
 
-        },
-        error = {
-
-        }, shouldRefetchOnSizeChange = { _, size ->
-
-            Log.e("glide", "${size.height},${size.width}")
-            false
-        }
-    )
-    ActionWeight(entity = entity)
+    }
+        ActionWeight(
+            entity = entity,
+        )
 
 
 }

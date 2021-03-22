@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.load.resource.bitmap.Rotate
 import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.data.editPageData
 import dev.chrisbanes.accompanist.glide.GlideImage
@@ -36,6 +38,7 @@ public data class PreviewPageEntity(
     var offsetYFrame:Float =0f,
     var offsetX: Float = 120f,
     var offsetY: Float = 90f,
+    var rotate: Float=0f
 )
 data class PreviewPageImageEntity(
      var imageW:Float =40f,
@@ -60,6 +63,7 @@ fun MyPreviewPage(){
             temp.offsetXFrame=data.offsetXFrame.value
             temp.offsetYFrame=data.offsetYFrame.value
             temp.imagePath=data.imagePath
+            temp.rotate=data.imageRotate.value
             getPreviewImage(entity = temp)
         }
         else if(data is MyPageTextEntity){
@@ -87,6 +91,7 @@ fun getPreviewImage(entity: PreviewPageImageEntity) {
                     entity.offsetYFrame.roundToInt()
                 )
             }
+            .rotate(entity.rotate)
             .width(Dp(entity.imageW))
             .height(Dp(entity.imageH))
             ,

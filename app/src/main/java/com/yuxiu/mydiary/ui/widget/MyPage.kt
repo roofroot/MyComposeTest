@@ -15,13 +15,16 @@ open class EditPageElement(  var offsetXFrame: MutableState<Float> = mutableStat
                              var offsetYFrame: MutableState<Float> = mutableStateOf(0f),
                              var offsetX: MutableState<Float> = mutableStateOf(120f),
                              var offsetY: MutableState<Float> = mutableStateOf(90f),
-                             var index:Int=-1
+                             var index:Int=-1,
+                             var isRotate: MutableState<Boolean> = mutableStateOf(false),
                              )
 
 data class MyPageImageEntity(  var imageW: MutableState<Float> = mutableStateOf(40f) ,
                                 var imageH: MutableState<Float> = mutableStateOf(30f),
                                 var imagePath:String ="",
                                 var imageMaxW:Float=0f,
+                                var imageRotate: MutableState<Float> = mutableStateOf(0f),
+
                                 var bl: Float = 1f,):EditPageElement()
 
  data class MyPageTextEntity(
