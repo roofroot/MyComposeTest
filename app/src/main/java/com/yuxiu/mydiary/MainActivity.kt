@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
                                 PageName.SHOWPAGE -> {
                                     MyPreviewPage()
                                 }
-
                             }
                         }
                     }

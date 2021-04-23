@@ -65,6 +65,7 @@ fun EditPage(context: Context) {
             inputTextPage()
         }
     }
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight()) {
@@ -74,5 +75,17 @@ fun EditPage(context: Context) {
         Text("文本", modifier = Modifier.clickable {
             navigation.onStateChange(Navigation.INPUTTEXTPAGE, true)
         })
+        Text("视频", modifier = Modifier.clickable {
+            var mediaEntity=MyPageMediaEntity(player=null)
+            mediaEntity.mediaPath="rtmp://58.200.131.2:1935/livetv/hunantv"
+            editPageData.add(mediaEntity)
+//            mediaEntity=MyPageMediaEntity()
+//            mediaEntity.mediaPath="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+//            editPageData.add(mediaEntity)
+            navigation.refreshState(Navigation.MYPAGESTATE)
+
+
+        })
     }
 }
+

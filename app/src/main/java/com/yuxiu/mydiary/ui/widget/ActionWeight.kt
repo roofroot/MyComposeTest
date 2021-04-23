@@ -35,11 +35,9 @@ import com.yuxiu.mydiary.MainActivity
 import com.yuxiu.mydiary.data.editPageData
 import com.yuxiu.mydiary.ui.Navigation
 import kotlin.math.*
-var  ssz= -1;
 @SuppressLint("RememberReturnType")
 @Composable
 fun ActionWeight(entity: MyPageImageEntity) {
-
     val left: Float = 0f;
     val right: Float = 30f;
     val top: Float = 0f;
@@ -215,7 +213,6 @@ fun ActionWeight(entity: MyPageImageEntity) {
 //
 //                }
                 detectDragGestures({
-                    ssz=-1
                     actionBtnBg.value = Color(0xffff3e96)
                 }, {
                     actionBtnBg.value = Color(0x0fff3e96)
@@ -252,7 +249,7 @@ fun ActionWeight(entity: MyPageImageEntity) {
 //                        entity.imageRotate.value=-x
 //                    }
                     var rotateRandians =Math.toRadians(x.toDouble())
-                    Log.e("dis","${dragAmount.y}，${ydistance.value},${xdistance.value},$ssz")
+//                    Log.e("dis","${dragAmount.y}，${ydistance.value},${xdistance.value},$ssz")
 
                 if(rotateRandians<30){
                     var xtemp=(width/(2*tan(rotateRandians))-height/2).toFloat()
@@ -266,13 +263,13 @@ fun ActionWeight(entity: MyPageImageEntity) {
                     if (temp * temp >= (width / 2 * width / 2 + height / 2 * height / 2)) {
                         var tempc =
                             ((height / 2 - cos(rotateRandians) * tempb) / cos(rotateRandians)).toFloat()
-                        Log.e("tempc", "$tempc")
+//                        Log.e("tempc", "$tempc")
                         rd.value = rb.value + temp
                         rc.value = ra.value - tempc
                     } else {
                         var tempc =
                             (((height / 2 - cos(rotateRandians) * temp)) * sin(rotateRandians)).toFloat()
-                        Log.e("tempc", "$tempc")
+//                        Log.e("tempc", "$tempc")
                         rd.value = rb.value + temp + tempb
                         rc.value = ra.value - tempc
 
@@ -426,6 +423,117 @@ fun ActionWeight(entity: MyPageImageEntity) {
 
 @Composable
 fun ActionWeight(entity: MyPageTextEntity) {
+
+    val left: Float = 0f;
+    val right: Float = 30f;
+    val top: Float = 0f;
+    val bottom: Float = 30f;
+    var isActionBarVisibility = remember {
+        mutableStateOf(false)
+    }
+    var actionBtnBg = remember {
+        mutableStateOf(Color(0x0f02f78e))
+    }
+    if (isActionBarVisibility.value) {
+        Column(Modifier
+            .offset {
+                IntOffset(
+                    entity.offsetX.value.roundToInt(),
+                    entity.offsetY.value.roundToInt() - (MainActivity.density * 100).toInt()
+                )
+            }
+            .width(50.dp)
+            .wrapContentHeight()) {
+            Text("上一层", modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    var index = editPageData.indexOf(entity)
+                    var temp: EditPageElement?
+                    if (index < editPageData.size - 1) {
+                        temp = editPageData[index + 1]
+                        editPageData[index + 1] = entity
+                        editPageData[index] = temp
+                        navigation.refreshState(Navigation.MYPAGESTATE)
+                    }
+                    isActionBarVisibility.value = false
+
+                })
+            Text("下一层", modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    var index = editPageData.indexOf(entity)
+                    var temp: EditPageElement?
+                    if (index > 0) {
+                        temp = editPageData[index - 1]
+                        editPageData[index - 1] = entity
+                        editPageData[index] = temp
+                        navigation.refreshState(Navigation.MYPAGESTATE)
+                    }
+                    isActionBarVisibility.value = false
+
+                })
+
+        }
+    }
+    Canvas(
+        Modifier
+            .offset {
+                IntOffset(
+                    entity.offsetX.value.roundToInt(),
+                    entity.offsetY.value.roundToInt()
+                )
+            }
+            .background(actionBtnBg.value)
+            .size(Dp(50f))
+            .pointerInput(Unit) {
+//                detectDragGestures { change, dragAmount ->
+//
+//                }
+                detectDragGestures({
+                    actionBtnBg.value = Color(0xff02f78e)
+                }, {
+                    actionBtnBg.value = Color(0x0f02f78e)
+                }, {
+                    actionBtnBg.value = Color(0x0f02f78e)
+                }, { change, dragAmount ->
+
+                    change.consumeAllChanges()
+                    if (entity.offsetX.value + dragAmount.x - entity.offsetXFrame.value > 40
+                        && entity.offsetX.value + dragAmount.x - entity.offsetXFrame.value < MainActivity.screenW
+                        && entity.offsetY.value - entity.offsetYFrame.value < MainActivity.screenH - 80 * MainActivity.density
+                    ) {
+                        entity.offsetX.value += dragAmount.x
+                    }
+                    if (entity.offsetY.value + dragAmount.y - entity.offsetYFrame.value > 20
+                        && entity.offsetY.value + dragAmount.y - entity.offsetYFrame.value < MainActivity.screenH
+                    ) {
+                        entity.offsetY.value += dragAmount.y
+                    }
+
+                })
+            }
+            .clickable {
+                isActionBarVisibility.value = !isActionBarVisibility.value
+            }
+    )
+    {
+
+        drawIntoCanvas { canvas ->
+            val paint = Paint()
+            paint.color = Color.Black
+            paint.strokeWidth = 3f
+            paint.style = PaintingStyle.Stroke
+            var rect = Rect(
+                left, top, right, bottom
+            )
+            canvas.drawRect(rect, paint)
+//                canvas.drawCircle(Offset(50f,50f),50f,paint)
+        }
+    }
+
+}
+@Composable
+fun ActionWeight(entity:MyPageMediaEntity) {
 
     val left: Float = 0f;
     val right: Float = 30f;

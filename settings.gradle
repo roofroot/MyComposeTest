@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MyDiary"
 include ':app'
+include ':ijk_lib'

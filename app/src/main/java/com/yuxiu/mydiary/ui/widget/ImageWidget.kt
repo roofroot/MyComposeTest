@@ -1,10 +1,4 @@
 package com.yuxiu.mydiary.ui.widget
-
-import android.util.Log
-import androidx.annotation.Px
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
@@ -14,33 +8,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
-import com.yuxiu.mydiary.MainActivity
-import com.yuxiu.mydiary.R
 import dev.chrisbanes.accompanist.glide.GlideImage
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.tan
-
 @Composable
 fun getImage(entity: MyPageImageEntity) {
-//    val image = painterResource(R.drawable.placeholder_4_3)
     var stateAction = remember {
         mutableStateOf(false)
     }
-
     entity.offsetXFrame = remember {
         mutableStateOf(entity.offsetXFrame.value)
     }
@@ -119,7 +102,6 @@ fun getImage(entity: MyPageImageEntity) {
                 false
             }
         )
-
     }
         ActionWeight(
             entity = entity,
